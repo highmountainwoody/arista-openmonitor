@@ -1,0 +1,56 @@
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ["alertmanager:9093"]
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ["prometheus:9090"]
+
+  - job_name: snmp
+    metrics_path: /snmp
+    params:
+      module: ["arista_if_mib"]
+    static_configs:
+      - targets:
+          - 192.0.2.10
+          - 192.0.2.11
+          - 192.0.2.12
+          - 192.0.2.13
+        labels:
+          site: campus-1
+          role: access-core
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: snmp_exporter:9116
+
+  - job_name: telegraf_gnmi
+    static_configs:
+      - targets: ["telegraf:9273"]
+
+  - job_name: blackbox
+    metrics_path: /probe
+    params:
+      module: ["icmp"]
+    static_configs:
+      - targets:
+          - 192.0.2.10
+          - 192.0.2.11
+          - 192.0.2.12
+          - 192.0.2.13
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox_exporter:9115
