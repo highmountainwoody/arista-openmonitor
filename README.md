@@ -29,6 +29,19 @@ This repository provides a production-oriented starter stack for monitoring Aris
 
 > Note: Use `docker-compose` if your environment does not support the `docker compose` plugin.
 
+## Grafana dashboards
+
+Grafana is provisioned with a baseline dashboard at **Dashboards → Arista Campus → Arista Campus Monitoring**. It includes panels for:
+
+- Interface throughput and utilization.
+- Interface errors, discards, and drops.
+- Interface state and flap detection.
+- Queue drops/congestion (expects gNMI/Telegraf metrics; update queries as needed).
+- MLAG and LACP health (expects gNMI or custom exporter metrics; update queries as needed).
+- CPU and memory utilization (via HOST-RESOURCES-MIB).
+
+If you add or rename metrics, update `grafana/dashboards/arista-campus-monitoring.json`.
+
 ## Where to configure switch IPs and credentials
 
 ### 1) Prometheus scrape targets (SNMP + blackbox)
@@ -101,6 +114,52 @@ Example:
 - Configure your Arista switches to send syslog to the host running Docker Compose on port **1514**.
 - Promtail configuration: `config/promtail/promtail.yml`.
 
+## EOS CLI examples (SNMP, syslog, gNMI)
+
+The following EOS CLI snippets show how to point SNMP, syslog, and gNMI telemetry at this stack. Replace `MONITORING_HOST`, usernames, and secrets with your values and align ports with your environment.
+
+### SNMP (SNMPv3 recommended)
+
+```text
+! Create an SNMPv3 user with authPriv (example)
+snmp-server view MONITORING iso included
+snmp-server group MONITORING v3 priv read MONITORING
+snmp-server user snmpuser MONITORING v3 auth sha AUTH_PASSWORD priv aes PRIV_PASSWORD
+
+! Optional: restrict to the monitoring host
+snmp-server host MONITORING_HOST version 3 priv snmpuser
+```
+
+### Syslog (to Promtail)
+
+```text
+logging host MONITORING_HOST transport udp port 1514
+logging host MONITORING_HOST transport tcp port 1514
+logging source-interface Management1
+logging level warnings
+```
+
+### gNMI (to Telegraf)
+
+```text
+management api gnmi
+   transport grpc
+   provider eos-native
+   no shutdown
+!
+management api gnmi
+   transport grpc ssl profile GNMI_PROFILE
+!
+management security
+   ssl profile GNMI_PROFILE
+      certificate GNMI_CERT
+      key GNMI_KEY
+!
+username gnmi-user secret GNMI_PASSWORD
+```
+
+> Note: gNMI TLS profile and certificate/key handling depend on your EOS version and PKI workflow. Ensure the port (default 6030) matches `config/telegraf/telegraf.conf`.
+
 ## Phased rollout guidance
 
 1. **Phase 1 (baseline)**: SNMP + syslog
@@ -129,6 +188,8 @@ docker compose down
 ## Directory map
 
 - `docker-compose.yml`: service definitions and port mappings.
+- `grafana/provisioning`: Grafana data source + dashboard provisioning.
+- `grafana/dashboards/arista-campus-monitoring.json`: baseline monitoring dashboard.
 - `config/prometheus/prometheus.yml`: scrape targets and Alertmanager configuration.
 - `config/snmp_exporter/snmp.yml`: SNMP module and credentials.
 - `config/telegraf/telegraf.conf`: gNMI subscriptions and output to Prometheus.
