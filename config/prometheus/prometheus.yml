@@ -16,6 +16,7 @@ scrape_configs:
     metrics_path: /snmp
     params:
       module: ["arista_if_mib"]
+      auth: ["public_v2"]
     static_configs:
       - targets:
           - 192.0.2.10
