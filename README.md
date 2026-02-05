@@ -1,6 +1,6 @@
 # Arista Campus Monitoring (Prometheus + Grafana + Loki)
 
-This repository provides a production-oriented starter stack for monitoring Arista 750-series access switches and 7280-series core switches using open source tooling (no CloudVision). It emphasizes a phased rollout: start with SNMP + syslog, then add gNMI streaming telemetry for high-resolution metrics.
+This repository provides a production-oriented starter stack for monitoring Arista Campus and DCN switches using open source tooling (no CloudVision). It emphasizes a phased rollout: start with SNMP + syslog, then add gNMI streaming telemetry for high-resolution metrics.
 
 ## What you get
 
