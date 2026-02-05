@@ -84,15 +84,6 @@ auths:
     auth_password: "REPLACE_ME"
     priv_protocol: AES
     priv_password: "REPLACE_ME"
-modules:
-  arista_if_mib:
-    auth:
-      username: snmp-user
-      security_level: authPriv
-      auth_protocol: SHA
-      auth_password: "REPLACE_ME"
-      priv_protocol: AES
-      priv_password: "REPLACE_ME"
 ```
 
 ### 3) gNMI targets and credentials (Telegraf)

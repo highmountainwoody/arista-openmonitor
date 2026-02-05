@@ -1,11 +1,74 @@
 auths:
   arista_v2:
-    community: CHANGEME
     version: 2
+    community: CHANGEME
+
+  # SNMPv3 example (commented): update credentials and set Prometheus params.auth
+  # arista_v3:
+  #   version: 3
+  #   security_level: authPriv
+  #   username: "REPLACE_ME"
+  #   auth_protocol: "SHA"
+  #   auth_password: "REPLACE_ME"
+  #   priv_protocol: "AES"
+  #   priv_password: "REPLACE_ME"
+
 
 modules:
   arista_sw:
     walk:
+      # System
+      - 1.3.6.1.2.1.1
+
+      # IF-MIB ifTable
+      - 1.3.6.1.2.1.2.2
+
+      # IF-MIB ifXTable (64-bit counters, alias, highspeed, etc)
+      - 1.3.6.1.2.1.31.1.1
+
+      # EtherLike-MIB (L2 errors)
+      - 1.3.6.1.2.1.10.7.2
+
+      # ENTITY-MIB inventory
+      - 1.3.6.1.2.1.47.1.1
+
+      # ENTITY-SENSOR-MIB sensors
+      - 1.3.6.1.2.1.99.1.1
+
+    metrics:
+      # -------------------------------------------------------------------
+      # System
+      # -------------------------------------------------------------------
+      - name: sysUpTime
+        oid: 1.3.6.1.2.1.1.3
+        type: gauge
+        help: System uptime (TimeTicks)
+
+      # -------------------------------------------------------------------
+      # Interface identity + state
+      # -------------------------------------------------------------------
+      - name: ifAdminStatus
+        oid: 1.3.6.1.2.1.2.2.1.7
+        type: gauge
+        help: Interface admin status (1=up,2=down,3=testing)
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.2.2.1.2
+            labelname: ifDescr
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.18
+            labelname: ifAlias
+
+      - name: ifOperStatus
+        oid: 1.3.6.1.2.1.2.2.1.8
+        type: gauge
+        help: Interface oper status (1=up,2=down,7=lowerLayerDown)
       # IF-MIB
       - 1.3.6.1.2.1.2
       - 1.3.6.1.2.1.31
@@ -28,6 +91,346 @@ modules:
           - labels: [ifIndex]
             oid: 1.3.6.1.2.1.2.2.1.2
             labelname: ifDescr
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.18
+            labelname: ifAlias
+
+      - name: ifType
+        oid: 1.3.6.1.2.1.2.2.1.3
+        type: gauge
+        help: Interface type (IANAifType enum)
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+
+      - name: ifMtu
+        oid: 1.3.6.1.2.1.2.2.1.4
+        type: gauge
+        help: Interface MTU
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+
+      - name: ifSpeed
+        oid: 1.3.6.1.2.1.2.2.1.5
+        type: gauge
+        help: Interface speed in bps (32-bit; may be 0 on high-speed links)
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+
+      - name: ifHighSpeed
+        oid: 1.3.6.1.2.1.31.1.1.1.15
+        type: gauge
+        help: Interface speed in Mbps (preferred)
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+
+      # -------------------------------------------------------------------
+      # Interface counters (32-bit)
+      # -------------------------------------------------------------------
+      - name: ifInOctets
+        oid: 1.3.6.1.2.1.2.2.1.10
+        type: counter
+        help: Inbound octets (32-bit)
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+
+      - name: ifOutOctets
+        oid: 1.3.6.1.2.1.2.2.1.16
+        type: counter
+        help: Outbound octets (32-bit)
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+
+      - name: ifInUcastPkts
+        oid: 1.3.6.1.2.1.2.2.1.11
+        type: counter
+        help: Inbound unicast packets (32-bit)
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+
+      - name: ifOutUcastPkts
+        oid: 1.3.6.1.2.1.2.2.1.17
+        type: counter
+        help: Outbound unicast packets (32-bit)
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+
+      # Errors / discards
+      - name: ifInErrors
+        oid: 1.3.6.1.2.1.2.2.1.14
+        type: counter
+        help: Inbound errors
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+
+      - name: ifOutErrors
+        oid: 1.3.6.1.2.1.2.2.1.20
+        type: counter
+        help: Outbound errors
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+
+      - name: ifInDiscards
+        oid: 1.3.6.1.2.1.2.2.1.13
+        type: counter
+        help: Inbound discards
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+
+      - name: ifOutDiscards
+        oid: 1.3.6.1.2.1.2.2.1.19
+        type: counter
+        help: Outbound discards
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+
+      # -------------------------------------------------------------------
+      # Interface counters (64-bit) - these are the ones you want in Grafana
+      # -------------------------------------------------------------------
+      - name: ifHCInOctets
+        oid: 1.3.6.1.2.1.31.1.1.1.6
+        type: counter
+        help: Inbound octets (64-bit)
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.18
+            labelname: ifAlias
+
+      - name: ifHCOutOctets
+        oid: 1.3.6.1.2.1.31.1.1.1.10
+        type: counter
+        help: Outbound octets (64-bit)
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.18
+            labelname: ifAlias
+
+      - name: ifHCInUcastPkts
+        oid: 1.3.6.1.2.1.31.1.1.1.7
+        type: counter
+        help: Inbound unicast packets (64-bit)
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+
+      - name: ifHCOutUcastPkts
+        oid: 1.3.6.1.2.1.31.1.1.1.11
+        type: counter
+        help: Outbound unicast packets (64-bit)
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+
+      - name: ifHCInMulticastPkts
+        oid: 1.3.6.1.2.1.31.1.1.1.8
+        type: counter
+        help: Inbound multicast packets (64-bit)
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+
+      - name: ifHCOutMulticastPkts
+        oid: 1.3.6.1.2.1.31.1.1.1.12
+        type: counter
+        help: Outbound multicast packets (64-bit)
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+
+      - name: ifHCInBroadcastPkts
+        oid: 1.3.6.1.2.1.31.1.1.1.9
+        type: counter
+        help: Inbound broadcast packets (64-bit)
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+
+      - name: ifHCOutBroadcastPkts
+        oid: 1.3.6.1.2.1.31.1.1.1.13
+        type: counter
+        help: Outbound broadcast packets (64-bit)
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+
+      # -------------------------------------------------------------------
+      # EtherLike-MIB L2 errors (ifIndex indexed)
+      # -------------------------------------------------------------------
+      - name: dot3StatsAlignmentErrors
+        oid: 1.3.6.1.2.1.10.7.2.1.2
+        type: counter
+        help: Alignment errors
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+
+      - name: dot3StatsFCSErrors
+        oid: 1.3.6.1.2.1.10.7.2.1.3
+        type: counter
+        help: FCS errors
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+
+      - name: dot3StatsSymbolErrors
+        oid: 1.3.6.1.2.1.10.7.2.1.18
+        type: counter
+        help: Symbol errors
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+
+      - name: dot3StatsFrameTooLongs
+        oid: 1.3.6.1.2.1.10.7.2.1.13
+        type: counter
+        help: Frames too long
+        indexes:
+          - labelname: ifIndex
+            type: gauge
+        lookups:
+          - labels: [ifIndex]
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            labelname: ifName
+
+      # -------------------------------------------------------------------
+      # ENTITY-SENSOR-MIB (raw sensor value + status; decode in Grafana later)
+      # -------------------------------------------------------------------
+      - name: entPhySensorValue
+        oid: 1.3.6.1.2.1.99.1.1.1.4
+        type: gauge
+        help: Sensor reading (apply scale/precision yourself)
+        indexes:
+          - labelname: entPhysicalIndex
+            type: gauge
+        lookups:
+          - labels: [entPhysicalIndex]
+            oid: 1.3.6.1.2.1.47.1.1.1.1.7
+            labelname: entPhysicalName
+          - labels: [entPhysicalIndex]
+            oid: 1.3.6.1.2.1.47.1.1.1.1.2
+            labelname: entPhysicalDescr
+
+      - name: entPhySensorStatus
+        oid: 1.3.6.1.2.1.99.1.1.1.5
+        type: gauge
+        help: Sensor status
+        indexes:
+          - labelname: entPhysicalIndex
+            type: gauge
+        lookups:
+          - labels: [entPhysicalIndex]
+            oid: 1.3.6.1.2.1.47.1.1.1.1.7
+            labelname: entPhysicalName
 
       - name: ifAdminStatus
         oid: 1.3.6.1.2.1.2.2.1.7

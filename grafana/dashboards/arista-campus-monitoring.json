@@ -3,6 +3,7 @@
     "list": [
       {
         "builtIn": 1,
+        "datasource": "-- Grafana --",
         "datasource": {
           "type": "grafana",
           "uid": "-- Grafana --"
@@ -15,6 +16,13 @@
       }
     ]
   },
+  "description": "Arista EOS via Prometheus SNMP Exporter (IF-MIB, IFX-MIB, EtherLike-MIB, ENTITY-SENSOR-MIB). Built for module=arista_sw and auth=arista_v2.",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": false,
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
@@ -24,6 +32,368 @@
     {
       "datasource": {
         "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 0 }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "id": 1,
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "horizontal",
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sysUpTime{job=\"snmp\", instance=~\"$instance\"} / 100",
+          "legendFormat": "{{instance}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "System Uptime (seconds)",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": { "unit": "percent", "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 80 }, { "color": "red", "value": 95 }] } },
+        "overrides": []
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
+      "id": 2,
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "orientation": "horizontal", "textMode": "auto" },
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "100 * (8 * rate(ifHCInOctets{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])) / clamp_min(ifHighSpeed{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"} * 1000000, 1)",
+          "legendFormat": "In {{ifAlias}} {{ifName}} (ifIndex={{ifIndex}})",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "editorMode": "code",
+          "expr": "100 * (8 * rate(ifHCOutOctets{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])) / clamp_min(ifHighSpeed{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"} * 1000000, 1)",
+          "legendFormat": "Out {{ifAlias}} {{ifName}} (ifIndex={{ifIndex}})",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Utilization % (In/Out)",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": { "defaults": { "unit": "bps" }, "overrides": [] },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 4 },
+      "id": 3,
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] },
+        "tooltip": { "mode": "single" }
+      },
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "8 * rate(ifHCInOctets{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
+          "legendFormat": "In {{ifAlias}} {{ifName}} (ifIndex={{ifIndex}})",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "editorMode": "code",
+          "expr": "8 * rate(ifHCOutOctets{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
+          "legendFormat": "Out {{ifAlias}} {{ifName}} (ifIndex={{ifIndex}})",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Interface Throughput (bps) - 64-bit Counters",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": { "defaults": { "unit": "pps" }, "overrides": [] },
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 4 },
+      "id": 4,
+      "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] }, "tooltip": { "mode": "single" } },
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "rate(ifHCInUcastPkts{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
+          "legendFormat": "InUcast {{ifAlias}} {{ifName}} (ifIndex={{ifIndex}})",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "editorMode": "code",
+          "expr": "rate(ifHCOutUcastPkts{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
+          "legendFormat": "OutUcast {{ifAlias}} {{ifName}} (ifIndex={{ifIndex}})",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "editorMode": "code",
+          "expr": "rate(ifHCInMulticastPkts{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
+          "legendFormat": "InMcast {{ifName}} (ifIndex={{ifIndex}})",
+          "range": true,
+          "refId": "C"
+        },
+        {
+          "editorMode": "code",
+          "expr": "rate(ifHCOutMulticastPkts{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
+          "legendFormat": "OutMcast {{ifName}} (ifIndex={{ifIndex}})",
+          "range": true,
+          "refId": "D"
+        }
+      ],
+      "title": "Packets per second (64-bit)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": { "defaults": { "unit": "ops" }, "overrides": [] },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 13 },
+      "id": 5,
+      "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] }, "tooltip": { "mode": "single" } },
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "rate(ifInErrors{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
+          "legendFormat": "ifInErrors {{ifName}} (ifIndex={{ifIndex}})",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "editorMode": "code",
+          "expr": "rate(ifOutErrors{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
+          "legendFormat": "ifOutErrors {{ifName}} (ifIndex={{ifIndex}})",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "editorMode": "code",
+          "expr": "rate(ifInDiscards{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
+          "legendFormat": "ifInDiscards {{ifName}} (ifIndex={{ifIndex}})",
+          "range": true,
+          "refId": "C"
+        },
+        {
+          "editorMode": "code",
+          "expr": "rate(ifOutDiscards{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
+          "legendFormat": "ifOutDiscards {{ifName}} (ifIndex={{ifIndex}})",
+          "range": true,
+          "refId": "D"
+        }
+      ],
+      "title": "IF-MIB Errors / Discards (per second)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": { "defaults": { "unit": "ops" }, "overrides": [] },
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 13 },
+      "id": 6,
+      "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] }, "tooltip": { "mode": "single" } },
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "rate(dot3StatsFCSErrors{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
+          "legendFormat": "FCS {{ifName}} (ifIndex={{ifIndex}})",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "editorMode": "code",
+          "expr": "rate(dot3StatsAlignmentErrors{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
+          "legendFormat": "Alignment {{ifName}} (ifIndex={{ifIndex}})",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "editorMode": "code",
+          "expr": "rate(dot3StatsSymbolErrors{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
+          "legendFormat": "Symbol {{ifName}} (ifIndex={{ifIndex}})",
+          "range": true,
+          "refId": "C"
+        },
+        {
+          "editorMode": "code",
+          "expr": "rate(dot3StatsFrameTooLongs{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
+          "legendFormat": "TooLong {{ifName}} (ifIndex={{ifIndex}})",
+          "range": true,
+          "refId": "D"
+        }
+      ],
+      "title": "EtherLike-MIB L2 Errors (per second)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "1": { "text": "up" }, "2": { "text": "down" }, "3": { "text": "testing" }, "7": { "text": "lowerLayerDown" } } }
+          ]
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 22 },
+      "id": 7,
+      "options": {
+        "showHeader": true,
+        "sortBy": [{ "displayName": "ifIndex", "desc": false }]
+      },
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "ifAdminStatus{job=\"snmp\", instance=~\"$instance\"}",
+          "legendFormat": "",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "editorMode": "code",
+          "expr": "ifOperStatus{job=\"snmp\", instance=~\"$instance\"}",
+          "legendFormat": "",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "editorMode": "code",
+          "expr": "ifHighSpeed{job=\"snmp\", instance=~\"$instance\"}",
+          "legendFormat": "",
+          "range": true,
+          "refId": "C"
+        }
+      ],
+      "title": "Interface State / Speed (table)",
+      "type": "table"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "1": { "text": "ok" },
+                "2": { "text": "unavailable" },
+                "3": { "text": "nonoperational" },
+                "4": { "text": "warning" },
+                "5": { "text": "critical" }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 22 },
+      "id": 8,
+      "options": { "showHeader": true },
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "entPhySensorStatus{job=\"snmp\", instance=~\"$instance\"}",
+          "legendFormat": "",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "editorMode": "code",
+          "expr": "entPhySensorValue{job=\"snmp\", instance=~\"$instance\"}",
+          "legendFormat": "",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Sensors (raw status + raw value)",
+      "type": "table"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": ["arista", "eos", "snmp", "if-mib", "snmp_exporter"],
+  "templating": {
+    "list": [
+      {
+        "current": { "selected": false, "text": "Prometheus", "value": "Prometheus" },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Datasource",
+        "name": "DS_PROMETHEUS",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "type": "datasource"
+      },
+      {
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "definition": "label_values(up{job=\"snmp\"}, site)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Site",
+        "multi": true,
+        "name": "site",
+        "query": { "query": "label_values(up{job=\"snmp\"}, site)", "refId": "PromSite" },
+        "refresh": 2,
+        "regex": "/.+/",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "definition": "label_values(up{job=\"snmp\",site=~\"$site\"}, role)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Role",
+        "multi": true,
+        "name": "role",
+        "query": { "query": "label_values(up{job=\"snmp\",site=~\"$site\"}, role)", "refId": "PromRole" },
+        "refresh": 2,
+        "regex": "/.+/",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "definition": "label_values(up{job=\"snmp\",site=~\"$site\",role=~\"$role\"}, instance)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Switch (instance)",
+        "multi": false,
+        "name": "instance",
+        "query": { "query": "label_values(up{job=\"snmp\",site=~\"$site\",role=~\"$role\"}, instance)", "refId": "PromInst" },
+        "refresh": 2,
+        "regex": "/.+/",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "definition": "label_values(ifOperStatus{job=\"snmp\",instance=~\"$instance\"}, ifIndex)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Interface (ifIndex)",
+        "multi": true,
+        "name": "ifIndex",
+        "query": { "query": "label_values(ifOperStatus{job=\"snmp\",instance=~\"$instance\"}, ifIndex)", "refId": "PromIf" },
+        "refresh": 2,
+        "regex": "/.+/",
         "uid": "Prometheus"
       },
       "fieldConfig": {
@@ -497,6 +867,12 @@
       }
     ]
   },
+  "time": { "from": "now-6h", "to": "now" },
+  "timepicker": { "refresh_intervals": ["10s", "30s", "1m", "5m", "15m", "30m", "1h"] },
+  "timezone": "",
+  "title": "Arista EOS - SNMP Interfaces & Health (snmp_exporter)",
+  "uid": "arista-eos-snmp-ifs",
+  "version": 1
   "time": {
     "from": "now-6h",
     "to": "now"
