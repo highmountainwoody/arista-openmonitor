@@ -71,9 +71,7 @@ Edit `config/snmp_exporter/snmp.yml`:
 - The default config uses SNMPv2c community `CHANGEME`. Update for production:
   - Prefer **SNMPv3** with limited views (update the `auths` block).
   - Ensure Prometheus `params.auth` matches the auth name you define.
-- The default config uses SNMPv2c community `public`. Update for production:
-  - Prefer **SNMPv3** with limited views.
-  - Replace the `auth` block accordingly.
+
 
 Example (SNMPv3 authPriv stub):
 
@@ -204,7 +202,6 @@ docker compose down
 - `grafana/dashboards/arista-campus-monitoring.json`: baseline monitoring dashboard.
 - `config/prometheus/prometheus.yml`: scrape targets and Alertmanager configuration.
 - `config/snmp_exporter/snmp.yml`: SNMP credentials (auths) and module walk list.
-- `config/snmp_exporter/snmp.yml`: SNMP module and credentials.
 - `config/telegraf/telegraf.conf`: gNMI subscriptions and output to Prometheus.
 - `config/promtail/promtail.yml`: syslog ingestion into Loki.
 - `config/loki/loki.yml`: Loki storage configuration.
