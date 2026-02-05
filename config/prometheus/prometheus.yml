@@ -15,6 +15,14 @@ scrape_configs:
   - job_name: snmp
     metrics_path: /snmp
     params:
+      module: ["arista_sw"]
+      auth: ["arista_v2"]
+    static_configs:
+      - targets:
+          - 10.0.0.10
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
       module: ["arista_if_mib"]
       auth: ["public_v2"]
     static_configs:

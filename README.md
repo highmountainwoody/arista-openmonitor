@@ -68,6 +68,9 @@ scrape_configs:
 
 Edit `config/snmp_exporter/snmp.yml`:
 
+- The default config uses SNMPv2c community `CHANGEME`. Update for production:
+  - Prefer **SNMPv3** with limited views (update the `auths` block).
+  - Ensure Prometheus `params.auth` matches the auth name you define.
 - The default config uses SNMPv2c community `public`. Update for production:
   - Prefer **SNMPv3** with limited views.
   - Replace the `auth` block accordingly.
@@ -75,6 +78,14 @@ Edit `config/snmp_exporter/snmp.yml`:
 Example (SNMPv3 authPriv stub):
 
 ```yaml
+auths:
+  snmpv3_authpriv:
+    username: snmp-user
+    security_level: authPriv
+    auth_protocol: SHA
+    auth_password: "REPLACE_ME"
+    priv_protocol: AES
+    priv_password: "REPLACE_ME"
 modules:
   arista_if_mib:
     auth:
@@ -91,6 +102,7 @@ modules:
 Edit `config/telegraf/telegraf.conf`:
 
 - **gNMI device addresses**:
+  - `[[inputs.gnmi]] addresses = ["192.0.2.10:6030", ...]`
   - `[[inputs.gnmi]] addresses = ["arista-750-1:6030", ...]`
 - **gNMI credentials**:
   - `username` / `password`
@@ -191,6 +203,7 @@ docker compose down
 - `grafana/provisioning`: Grafana data source + dashboard provisioning.
 - `grafana/dashboards/arista-campus-monitoring.json`: baseline monitoring dashboard.
 - `config/prometheus/prometheus.yml`: scrape targets and Alertmanager configuration.
+- `config/snmp_exporter/snmp.yml`: SNMP credentials (auths) and module walk list.
 - `config/snmp_exporter/snmp.yml`: SNMP module and credentials.
 - `config/telegraf/telegraf.conf`: gNMI subscriptions and output to Prometheus.
 - `config/promtail/promtail.yml`: syslog ingestion into Loki.
