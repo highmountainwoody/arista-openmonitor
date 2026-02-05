@@ -1,0 +1,11 @@
+apiVersion: 1
+
+dashboards:
+  - name: arista-campus
+    orgId: 1
+    folder: Arista Campus
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /etc/grafana/dashboards
