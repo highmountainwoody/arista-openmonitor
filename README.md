@@ -72,7 +72,6 @@ Edit `config/snmp_exporter/snmp.yml`:
   - Prefer **SNMPv3** with limited views (update the `auths` block).
   - Ensure Prometheus `params.auth` matches the auth name you define.
 
-
 Example (SNMPv3 authPriv stub):
 
 ```yaml
@@ -92,7 +91,6 @@ Edit `config/telegraf/telegraf.conf`:
 
 - **gNMI device addresses**:
   - `[[inputs.gnmi]] addresses = ["192.0.2.10:6030", ...]`
-  - `[[inputs.gnmi]] addresses = ["arista-750-1:6030", ...]`
 - **gNMI credentials**:
   - `username` / `password`
 - **TLS**:
