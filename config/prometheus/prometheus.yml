@@ -19,9 +19,9 @@ scrape_configs:
       auth: ["arista_v2"]
     static_configs:
       - targets:
-          - 192.0.2.10
-          - 192.0.2.11
-          - 192.0.2.12
+          - 192.168.0.1
+          - 192.168.0.2
+          - 192.168.0.3
         labels:
           site: campus-1
           role: access-core
@@ -52,9 +52,9 @@ scrape_configs:
       module: ["icmp"]
     static_configs:
       - targets:
-          - 192.0.2.10
-          - 192.0.2.11
-          - 192.0.2.12
+          - 192.168.0.1
+          - 192.168.0.2
+          - 192.168.0.3
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target

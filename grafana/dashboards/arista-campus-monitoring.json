@@ -16,9 +16,8 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": null,
+  "id": 0,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
       "datasource": {
@@ -31,21 +30,45 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "red", "value": 0 }
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 0
+              }
             ]
           },
           "unit": "s"
         },
         "overrides": []
       },
-      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
       "id": 1,
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
         "orientation": "horizontal",
-        "textMode": "auto"
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
+      "pluginVersion": "12.3.2",
       "targets": [
         {
           "editorMode": "code",
@@ -59,14 +82,55 @@
       "type": "stat"
     },
     {
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "fieldConfig": {
-        "defaults": { "unit": "percent", "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 80 }, { "color": "red", "value": 95 }] } },
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
         "overrides": []
       },
-      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
       "id": 2,
-      "options": { "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "orientation": "horizontal", "textMode": "auto" },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.3.2",
       "targets": [
         {
           "editorMode": "code",
@@ -87,39 +151,91 @@
       "type": "stat"
     },
     {
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "fieldConfig": { "defaults": { "unit": "bps" }, "overrides": [] },
-      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 4 },
-      "id": 3,
-      "options": {
-        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] },
-        "tooltip": { "mode": "single" }
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
       },
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "8 * rate(ifHCInOctets{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
-          "legendFormat": "In {{ifAlias}} {{ifName}} (ifIndex={{ifIndex}})",
-          "range": true,
-          "refId": "A"
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "pps"
         },
-        {
-          "editorMode": "code",
-          "expr": "8 * rate(ifHCOutOctets{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
-          "legendFormat": "Out {{ifAlias}} {{ifName}} (ifIndex={{ifIndex}})",
-          "range": true,
-          "refId": "B"
-        }
-      ],
-      "title": "Interface Throughput (bps) - 64-bit Counters",
-      "type": "timeseries"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "fieldConfig": { "defaults": { "unit": "pps" }, "overrides": [] },
-      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 4 },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
       "id": 4,
-      "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] }, "tooltip": { "mode": "single" } },
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.2",
       "targets": [
         {
           "editorMode": "code",
@@ -154,50 +270,196 @@
       "type": "timeseries"
     },
     {
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "fieldConfig": { "defaults": { "unit": "ops" }, "overrides": [] },
-      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 13 },
-      "id": 5,
-      "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] }, "tooltip": { "mode": "single" } },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 4
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.2",
       "targets": [
         {
           "editorMode": "code",
-          "expr": "rate(ifInErrors{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
-          "legendFormat": "ifInErrors {{ifName}} (ifIndex={{ifIndex}})",
+          "expr": "8 * rate(ifHCInOctets{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
+          "legendFormat": "In {{ifAlias}} {{ifName}} (ifIndex={{ifIndex}})",
           "range": true,
           "refId": "A"
         },
         {
           "editorMode": "code",
-          "expr": "rate(ifOutErrors{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
-          "legendFormat": "ifOutErrors {{ifName}} (ifIndex={{ifIndex}})",
+          "expr": "8 * rate(ifHCOutOctets{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
+          "legendFormat": "Out {{ifAlias}} {{ifName}} (ifIndex={{ifIndex}})",
           "range": true,
           "refId": "B"
-        },
-        {
-          "editorMode": "code",
-          "expr": "rate(ifInDiscards{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
-          "legendFormat": "ifInDiscards {{ifName}} (ifIndex={{ifIndex}})",
-          "range": true,
-          "refId": "C"
-        },
-        {
-          "editorMode": "code",
-          "expr": "rate(ifOutDiscards{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
-          "legendFormat": "ifOutDiscards {{ifName}} (ifIndex={{ifIndex}})",
-          "range": true,
-          "refId": "D"
         }
       ],
-      "title": "IF-MIB Errors / Discards (per second)",
+      "title": "Interface Throughput (bps) - 64-bit Counters",
       "type": "timeseries"
     },
     {
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "fieldConfig": { "defaults": { "unit": "ops" }, "overrides": [] },
-      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 13 },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ops"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
       "id": 6,
-      "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] }, "tooltip": { "mode": "single" } },
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.2",
       "targets": [
         {
           "editorMode": "code",
@@ -232,21 +494,280 @@
       "type": "timeseries"
     },
     {
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "fieldConfig": {
         "defaults": {
-          "mappings": [
-            { "type": "value", "options": { "1": { "text": "up" }, "2": { "text": "down" }, "3": { "text": "testing" }, "7": { "text": "lowerLayerDown" } } }
-          ]
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ops"
         },
         "overrides": []
       },
-      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 22 },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 13
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "rate(ifInErrors{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
+          "legendFormat": "ifInErrors {{ifName}} (ifIndex={{ifIndex}})",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "editorMode": "code",
+          "expr": "rate(ifOutErrors{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
+          "legendFormat": "ifOutErrors {{ifName}} (ifIndex={{ifIndex}})",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "editorMode": "code",
+          "expr": "rate(ifInDiscards{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
+          "legendFormat": "ifInDiscards {{ifName}} (ifIndex={{ifIndex}})",
+          "range": true,
+          "refId": "C"
+        },
+        {
+          "editorMode": "code",
+          "expr": "rate(ifOutDiscards{job=\"snmp\", instance=~\"$instance\", ifIndex=~\"$ifIndex\"}[5m])",
+          "legendFormat": "ifOutDiscards {{ifName}} (ifIndex={{ifIndex}})",
+          "range": true,
+          "refId": "D"
+        }
+      ],
+      "title": "IF-MIB Errors / Discards (per second)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "1": {
+                  "text": "ok"
+                },
+                "2": {
+                  "text": "unavailable"
+                },
+                "3": {
+                  "text": "nonoperational"
+                },
+                "4": {
+                  "text": "warning"
+                },
+                "5": {
+                  "text": "critical"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 18
+      },
+      "id": 8,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.3.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "entPhySensorStatus{job=\"snmp\", instance=~\"$instance\"}",
+          "legendFormat": "",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "editorMode": "code",
+          "expr": "entPhySensorValue{job=\"snmp\", instance=~\"$instance\"}",
+          "legendFormat": "",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Sensors (raw status + raw value)",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "1": {
+                  "text": "up"
+                },
+                "2": {
+                  "text": "down"
+                },
+                "3": {
+                  "text": "testing"
+                },
+                "7": {
+                  "text": "lowerLayerDown"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 22
+      },
       "id": 7,
       "options": {
+        "cellHeight": "sm",
         "showHeader": true,
-        "sortBy": [{ "displayName": "ifIndex", "desc": false }]
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "ifIndex"
+          }
+        ]
       },
+      "pluginVersion": "12.3.2",
       "targets": [
         {
           "editorMode": "code",
@@ -272,58 +793,25 @@
       ],
       "title": "Interface State / Speed (table)",
       "type": "table"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "1": { "text": "ok" },
-                "2": { "text": "unavailable" },
-                "3": { "text": "nonoperational" },
-                "4": { "text": "warning" },
-                "5": { "text": "critical" }
-              }
-            }
-          ]
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 22 },
-      "id": 8,
-      "options": { "showHeader": true },
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "entPhySensorStatus{job=\"snmp\", instance=~\"$instance\"}",
-          "legendFormat": "",
-          "range": true,
-          "refId": "A"
-        },
-        {
-          "editorMode": "code",
-          "expr": "entPhySensorValue{job=\"snmp\", instance=~\"$instance\"}",
-          "legendFormat": "",
-          "range": true,
-          "refId": "B"
-        }
-      ],
-      "title": "Sensors (raw status + raw value)",
-      "type": "table"
     }
   ],
+  "preload": false,
   "refresh": "30s",
-  "schemaVersion": 39,
-  "style": "dark",
-  "tags": ["arista", "eos", "snmp", "if-mib", "snmp_exporter"],
+  "schemaVersion": 42,
+  "tags": [
+    "arista",
+    "eos",
+    "snmp",
+    "if-mib",
+    "snmp_exporter"
+  ],
   "templating": {
     "list": [
       {
-        "current": { "selected": false, "text": "Prometheus", "value": "Prometheus" },
-        "hide": 0,
+        "current": {
+          "text": "Prometheus",
+          "value": "PBFA97CFB590B2093"
+        },
         "includeAll": false,
         "label": "Datasource",
         "name": "DS_PROMETHEUS",
@@ -333,56 +821,101 @@
         "type": "datasource"
       },
       {
-        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "current": {
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
         "definition": "label_values(up{job=\"snmp\"}, site)",
-        "hide": 0,
         "includeAll": true,
         "label": "Site",
         "multi": true,
         "name": "site",
-        "query": { "query": "label_values(up{job=\"snmp\"}, site)", "refId": "PromSite" },
+        "options": [],
+        "query": {
+          "query": "label_values(up{job=\"snmp\"}, site)",
+          "refId": "PromSite"
+        },
         "refresh": 2,
         "regex": "/.+/",
         "sort": 1,
         "type": "query"
       },
       {
-        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "current": {
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
         "definition": "label_values(up{job=\"snmp\",site=~\"$site\"}, role)",
-        "hide": 0,
         "includeAll": true,
         "label": "Role",
         "multi": true,
         "name": "role",
-        "query": { "query": "label_values(up{job=\"snmp\",site=~\"$site\"}, role)", "refId": "PromRole" },
+        "options": [],
+        "query": {
+          "query": "label_values(up{job=\"snmp\",site=~\"$site\"}, role)",
+          "refId": "PromRole"
+        },
         "refresh": 2,
         "regex": "/.+/",
         "sort": 1,
         "type": "query"
       },
       {
-        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "current": {
+          "text": "192.168.8.20",
+          "value": "192.168.8.20"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
         "definition": "label_values(up{job=\"snmp\",site=~\"$site\",role=~\"$role\"}, instance)",
-        "hide": 0,
         "includeAll": false,
         "label": "Switch (instance)",
-        "multi": false,
         "name": "instance",
-        "query": { "query": "label_values(up{job=\"snmp\",site=~\"$site\",role=~\"$role\"}, instance)", "refId": "PromInst" },
+        "options": [],
+        "query": {
+          "query": "label_values(up{job=\"snmp\",site=~\"$site\",role=~\"$role\"}, instance)",
+          "refId": "PromInst"
+        },
         "refresh": 2,
         "regex": "/.+/",
         "sort": 1,
         "type": "query"
       },
       {
-        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "current": {
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
         "definition": "label_values(ifOperStatus{job=\"snmp\",instance=~\"$instance\"}, ifIndex)",
-        "hide": 0,
         "includeAll": true,
         "label": "Interface (ifIndex)",
         "multi": true,
         "name": "ifIndex",
-        "query": { "query": "label_values(ifOperStatus{job=\"snmp\",instance=~\"$instance\"}, ifIndex)", "refId": "PromIf" },
+        "options": [],
+        "query": {
+          "query": "label_values(ifOperStatus{job=\"snmp\",instance=~\"$instance\"}, ifIndex)",
+          "refId": "PromIf"
+        },
         "refresh": 2,
         "regex": "/.+/",
         "sort": 1,
@@ -390,10 +923,23 @@
       }
     ]
   },
-  "time": { "from": "now-6h", "to": "now" },
-  "timepicker": { "refresh_intervals": ["10s", "30s", "1m", "5m", "15m", "30m", "1h"] },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h"
+    ]
+  },
   "timezone": "",
   "title": "Arista EOS - SNMP Interfaces & Health (snmp_exporter)",
   "uid": "arista-eos-snmp-ifs",
-  "version": 1
+  "version": 2
 }

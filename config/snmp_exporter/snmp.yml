@@ -3,16 +3,6 @@ auths:
     version: 2
     community: CHANGEME
 
-  # SNMPv3 example (commented): update credentials and set Prometheus params.auth
-  # arista_v3:
-  #   version: 3
-  #   security_level: authPriv
-  #   username: "REPLACE_ME"
-  #   auth_protocol: "SHA"
-  #   auth_password: "REPLACE_ME"
-  #   priv_protocol: "AES"
-  #   priv_password: "REPLACE_ME"
-
 modules:
   arista_sw:
     walk:
