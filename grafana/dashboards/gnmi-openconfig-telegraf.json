@@ -1,0 +1,448 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 1,
+      "panels": [],
+      "title": "Telemetry health",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": { "defaults": { "unit": "none" }, "overrides": [] },
+      "gridPos": { "h": 5, "w": 8, "x": 0, "y": 1 },
+      "id": 2,
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "horizontal",
+        "textMode": "auto",
+        "colorMode": "value"
+      },
+      "pluginVersion": "10.4.3",
+      "targets": [
+        {
+          "expr": "up{job=\"telegraf_gnmi\", site=~\"$site\", source=~\"$device\"}",
+          "legendFormat": "{{source}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Telegraf scrape up (per device)",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
+      "gridPos": { "h": 5, "w": 8, "x": 8, "y": 1 },
+      "id": 3,
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single" }
+      },
+      "targets": [
+        {
+          "expr": "scrape_duration_seconds{job=\"telegraf_gnmi\", site=~\"$site\"}",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Scrape duration",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": { "defaults": { "unit": "none" }, "overrides": [] },
+      "gridPos": { "h": 5, "w": 8, "x": 16, "y": 1 },
+      "id": 4,
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single" }
+      },
+      "targets": [
+        {
+          "expr": "scrape_samples_scraped{job=\"telegraf_gnmi\", site=~\"$site\"}",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Samples scraped",
+      "type": "timeseries"
+    },
+
+    {
+      "collapsed": false,
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 6 },
+      "id": 5,
+      "panels": [],
+      "title": "Device resources",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": { "defaults": { "unit": "percent" }, "overrides": [] },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 7 },
+      "id": 6,
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single" }
+      },
+      "targets": [
+        {
+          "expr": "process_cpu_system_processes_process_state_cpu_utilization{job=\"telegraf_gnmi\", site=~\"$site\", source=~\"$device\"}",
+          "legendFormat": "{{source}}",
+          "refId": "A"
+        }
+      ],
+      "title": "CPU utilization (per device)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": { "defaults": { "unit": "percent" }, "overrides": [] },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 7 },
+      "id": 7,
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single" }
+      },
+      "targets": [
+        {
+          "expr": "process_mem_system_processes_process_state_memory_utilization{job=\"telegraf_gnmi\", site=~\"$site\", source=~\"$device\"}",
+          "legendFormat": "{{source}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Memory utilization (per device)",
+      "type": "timeseries"
+    },
+
+    {
+      "collapsed": false,
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
+      "id": 8,
+      "panels": [],
+      "title": "Interface bandwidth",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": { "defaults": { "unit": "Mbits" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 15 },
+      "id": 9,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single" }
+      },
+      "targets": [
+        {
+          "expr": "max without (path,host,instance) (rate(interface_counters_interfaces_interface_state_counters_in_octets{job=\"telegraf_gnmi\", site=~\"$site\", source=~\"$device\", name=~\"$intf\"}[5m]) * 8 / 1e6)",
+          "legendFormat": "in {{source}} {{name}}",
+          "refId": "A"
+        },
+        {
+          "expr": "max without (path,host,instance) (rate(interface_counters_interfaces_interface_state_counters_out_octets{job=\"telegraf_gnmi\", site=~\"$site\", source=~\"$device\", name=~\"$intf\"}[5m]) * 8 / 1e6)",
+          "legendFormat": "out {{source}} {{name}}",
+          "refId": "B"
+        }
+      ],
+      "title": "Ingress/Egress Mbps (selected interface)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": { "defaults": { "unit": "Mbits" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 15 },
+      "id": 10,
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single" }
+      },
+      "targets": [
+        {
+          "expr": "topk(10, (max without (path,host,instance) (rate(interface_counters_interfaces_interface_state_counters_in_octets{job=\"telegraf_gnmi\", site=~\"$site\", source=~\"$device\"}[5m])) + max without (path,host,instance) (rate(interface_counters_interfaces_interface_state_counters_out_octets{job=\"telegraf_gnmi\", site=~\"$site\", source=~\"$device\"}[5m]))) * 8 / 1e6)",
+          "legendFormat": "{{name}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Top 10 busiest interfaces (Mbps, in+out)",
+      "type": "timeseries"
+    },
+
+    {
+      "collapsed": false,
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 23 },
+      "id": 11,
+      "panels": [],
+      "title": "Packets and traffic mix",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": { "defaults": { "unit": "pps" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 24 },
+      "id": 12,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single" }
+      },
+      "targets": [
+        {
+          "expr": "max without (path,host,instance) (rate(interface_counters_interfaces_interface_state_counters_in_pkts{job=\"telegraf_gnmi\", site=~\"$site\", source=~\"$device\", name=~\"$intf\"}[5m]))",
+          "legendFormat": "in pps",
+          "refId": "A"
+        },
+        {
+          "expr": "max without (path,host,instance) (rate(interface_counters_interfaces_interface_state_counters_out_pkts{job=\"telegraf_gnmi\", site=~\"$site\", source=~\"$device\", name=~\"$intf\"}[5m]))",
+          "legendFormat": "out pps",
+          "refId": "B"
+        }
+      ],
+      "title": "Packets per second (selected interface)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": { "defaults": { "unit": "pps" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 },
+      "id": 13,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single" },
+        "stacking": { "mode": "normal", "group": "A" }
+      },
+      "targets": [
+        {
+          "expr": "max without (path,host,instance) (rate(interface_counters_interfaces_interface_state_counters_in_unicast_pkts{job=\"telegraf_gnmi\", site=~\"$site\", source=~\"$device\", name=~\"$intf\"}[5m]))",
+          "legendFormat": "unicast in",
+          "refId": "A"
+        },
+        {
+          "expr": "max without (path,host,instance) (rate(interface_counters_interfaces_interface_state_counters_in_multicast_pkts{job=\"telegraf_gnmi\", site=~\"$site\", source=~\"$device\", name=~\"$intf\"}[5m]))",
+          "legendFormat": "multicast in",
+          "refId": "B"
+        },
+        {
+          "expr": "max without (path,host,instance) (rate(interface_counters_interfaces_interface_state_counters_in_broadcast_pkts{job=\"telegraf_gnmi\", site=~\"$site\", source=~\"$device\", name=~\"$intf\"}[5m]))",
+          "legendFormat": "broadcast in",
+          "refId": "C"
+        }
+      ],
+      "title": "Ingress traffic mix (pps, stacked)",
+      "type": "timeseries"
+    },
+
+    {
+      "collapsed": false,
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 32 },
+      "id": 14,
+      "panels": [],
+      "title": "Errors and discards",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": { "defaults": { "unit": "ops" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 33 },
+      "id": 15,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single" }
+      },
+      "targets": [
+        {
+          "expr": "max without (path,host,instance) (rate(interface_counters_interfaces_interface_state_counters_in_errors{job=\"telegraf_gnmi\", site=~\"$site\", source=~\"$device\", name=~\"$intf\"}[5m]))",
+          "legendFormat": "in errors/s",
+          "refId": "A"
+        },
+        {
+          "expr": "max without (path,host,instance) (rate(interface_counters_interfaces_interface_state_counters_out_errors{job=\"telegraf_gnmi\", site=~\"$site\", source=~\"$device\", name=~\"$intf\"}[5m]))",
+          "legendFormat": "out errors/s",
+          "refId": "B"
+        },
+        {
+          "expr": "max without (path,host,instance) (rate(interface_counters_interfaces_interface_state_counters_in_fcs_errors{job=\"telegraf_gnmi\", site=~\"$site\", source=~\"$device\", name=~\"$intf\"}[5m]))",
+          "legendFormat": "FCS errors/s",
+          "refId": "C"
+        }
+      ],
+      "title": "Errors (per second, selected interface)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": { "defaults": { "unit": "ops" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 33 },
+      "id": 16,
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single" }
+      },
+      "targets": [
+        {
+          "expr": "max without (path,host,instance) (rate(interface_counters_interfaces_interface_state_counters_in_discards{job=\"telegraf_gnmi\", site=~\"$site\", source=~\"$device\", name=~\"$intf\"}[5m]))",
+          "legendFormat": "in discards/s",
+          "refId": "A"
+        },
+        {
+          "expr": "max without (path,host,instance) (rate(interface_counters_interfaces_interface_state_counters_out_discards{job=\"telegraf_gnmi\", site=~\"$site\", source=~\"$device\", name=~\"$intf\"}[5m]))",
+          "legendFormat": "out discards/s",
+          "refId": "B"
+        }
+      ],
+      "title": "Discards (per second, selected interface)",
+      "type": "timeseries"
+    },
+
+    {
+      "collapsed": false,
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 41 },
+      "id": 17,
+      "panels": [],
+      "title": "Link flaps",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": { "defaults": { "unit": "none" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 42 },
+      "id": 18,
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single" }
+      },
+      "targets": [
+        {
+          "expr": "increase(interface_counters_interfaces_interface_state_counters_carrier_transitions{job=\"telegraf_gnmi\", site=~\"$site\", source=~\"$device\", name=~\"$intf\"}[1h])",
+          "legendFormat": "{{source}} {{name}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Carrier transitions in last hour (selected interface)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": { "defaults": { "unit": "none" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 42 },
+      "id": 19,
+      "options": { "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true } },
+      "targets": [
+        {
+          "expr": "topk(10, increase(interface_counters_interfaces_interface_state_counters_carrier_transitions{job=\"telegraf_gnmi\", site=~\"$site\", source=~\"$device\"}[6h]))",
+          "legendFormat": "{{name}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Top 10 flappers (last 6 hours)",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["gnmi", "telegraf", "arista", "openconfig"],
+  "templating": {
+    "list": [
+      {
+        "current": { "selected": false, "text": "Prometheus", "value": "Prometheus" },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Prometheus datasource",
+        "name": "DS_PROMETHEUS",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      },
+      {
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "definition": "label_values({job=\"telegraf_gnmi\"}, site)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Site",
+        "multi": true,
+        "name": "site",
+        "query": { "query": "label_values({job=\"telegraf_gnmi\"}, site)", "refId": "A" },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "definition": "label_values({job=\"telegraf_gnmi\", site=~\"$site\"}, source)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Device (source)",
+        "multi": true,
+        "name": "device",
+        "query": { "query": "label_values({job=\"telegraf_gnmi\", site=~\"$site\"}, source)", "refId": "A" },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "definition": "label_values({job=\"telegraf_gnmi\", site=~\"$site\", source=~\"$device\"}, name)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Interface (name)",
+        "multi": true,
+        "name": "intf",
+        "query": { "query": "label_values({job=\"telegraf_gnmi\", site=~\"$site\", source=~\"$device\"}, name)", "refId": "A" },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "definition": "label_values({job=\"telegraf_gnmi\", site=~\"$site\"}, pipeline)",
+        "hide": 2,
+        "includeAll": true,
+        "label": "Pipeline",
+        "multi": true,
+        "name": "pipeline",
+        "query": { "query": "label_values({job=\"telegraf_gnmi\", site=~\"$site\"}, pipeline)", "refId": "A" },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": { "from": "now-6h", "to": "now" },
+  "timepicker": { "refresh_intervals": ["10s", "30s", "1m", "5m", "15m", "30m", "1h"] },
+  "timezone": "",
+  "title": "gNMI OpenConfig (Telegraf → Prometheus)",
+  "uid": "gnmi-openconfig-telegraf",
+  "version": 1,
+  "weekStart": ""
+}
